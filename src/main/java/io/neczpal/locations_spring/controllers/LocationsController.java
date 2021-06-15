@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,14 +57,14 @@ public class LocationsController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "create a location")
     @ApiResponse(responseCode = "201", description = "location created")
-    public LocationDto createLocation(@RequestBody CreateLocationCommand createLocationCommand) {
+    public LocationDto createLocation(@Valid @RequestBody CreateLocationCommand createLocationCommand) {
         return locationsService.createLocation(createLocationCommand);
     }
 
     @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "edit a location")
     @ApiResponse(responseCode = "200", description = "location edited")
-    public LocationDto updateLocation(@PathVariable long id, @RequestBody UpdateLocationCommand updateLocationCommand) {
+    public LocationDto updateLocation(@PathVariable long id, @Valid @RequestBody UpdateLocationCommand updateLocationCommand) {
         return locationsService.updateLocation(id, updateLocationCommand);
     }
 

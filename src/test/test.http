@@ -10,9 +10,19 @@ POST http://localhost:8080/api/locations
 Content-Type: application/json
 
 {
-  "name": "Kapolnasnyek",
+  "name": "Budapest",
   "lon": 42.1,
   "lat": 18.7
+}
+
+### test validation
+POST http://localhost:8080/api/locations
+Content-Type: application/json
+
+{
+  "name": "  ",
+  "lon": 423252.1,
+  "lat": 185325.7
 }
 
 ###

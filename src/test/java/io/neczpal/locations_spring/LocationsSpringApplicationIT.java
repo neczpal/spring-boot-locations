@@ -1,6 +1,7 @@
 package io.neczpal.locations_spring;
 
 import io.neczpal.locations_spring.controllers.LocationsController;
+import io.neczpal.locations_spring.dtos.CreateLocationCommand;
 import io.neczpal.locations_spring.services.LocationsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,15 @@ class LocationsSpringApplicationIT {
                 Optional.empty(),
                 Optional.empty())
             .getLocationDtoList().get(0).getName()).startsWith("Budapest");
+    }
+
+    @Test
+    void addLocation() {
+        locationController.createLocation(new CreateLocationCommand(
+                "     ",
+                1653.351,
+                136.62
+        ));
     }
 
 }
