@@ -72,4 +72,9 @@ public class LocationsService {
 
         locationList.remove(location);
     }
+
+    public void deleteAllLocations() {
+        locationList.clear();
+        atomicLong = new AtomicLong(0);
+    }
 }
