@@ -1,4 +1,4 @@
-package io.neczpal.locations_spring.model;
+package io.neczpal.locations_spring.entities;
 
 public class Location {
     public final static Location BUDAPEST = new Location(-1, "Budapest", 42.1, 17.8);
