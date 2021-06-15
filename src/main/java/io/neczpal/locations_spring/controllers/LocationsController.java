@@ -3,10 +3,16 @@ package io.neczpal.locations_spring.controllers;
 import io.neczpal.locations_spring.dtos.CreateLocationCommand;
 import io.neczpal.locations_spring.dtos.LocationDto;
 import io.neczpal.locations_spring.dtos.UpdateLocationCommand;
+import io.neczpal.locations_spring.exceptions.LocationNotFoundException;
 import io.neczpal.locations_spring.services.LocationsService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,5 +59,23 @@ public class LocationsController {
     @DeleteMapping("/{id}")
     public void deleteLocation(@PathVariable long id) {
         locationsService.deleteLocation(id);
+    }
+
+
+    @ExceptionHandler(LocationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Problem> handleNotFoundException(LocationNotFoundException exception) {
+        Problem problem =
+                Problem.builder()
+                        .withType(URI.create("locations/not-found"))
+                        .withTitle("Not found")
+                        .withStatus(Status.NOT_FOUND)
+                        .withDetail(exception.getMessage())
+                        .build();
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .body(problem);
     }
 }

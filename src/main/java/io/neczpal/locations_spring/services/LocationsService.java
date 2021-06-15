@@ -4,6 +4,7 @@ import io.neczpal.locations_spring.dtos.CreateLocationCommand;
 import io.neczpal.locations_spring.dtos.LocationDto;
 import io.neczpal.locations_spring.dtos.UpdateLocationCommand;
 import io.neczpal.locations_spring.entities.Location;
+import io.neczpal.locations_spring.exceptions.LocationNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class LocationsService {
         return modelMapper.map(locationList.stream()
                 .filter(location -> location.getId() == id)
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Not valid ID: " + id)), LocationDto.class);
+                .orElseThrow(() -> new LocationNotFoundException("Not valid ID: " + id)), LocationDto.class);
     }
 
     public LocationDto createLocation(CreateLocationCommand createLocationCommand) {
@@ -54,7 +55,7 @@ public class LocationsService {
         Location location = locationList.stream()
                 .filter(loc -> loc.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Not valid ID: " + id));
+                .orElseThrow(() -> new LocationNotFoundException("Not valid ID: " + id));
 
         location.setName(updateLocationCommand.getName());
         location.setLon(updateLocationCommand.getLon());
@@ -67,7 +68,7 @@ public class LocationsService {
         Location location = locationList.stream()
                 .filter(loc -> loc.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Not valid ID: " + id));
+                .orElseThrow(() -> new LocationNotFoundException("Not valid ID: " + id));
 
         locationList.remove(location);
     }
