@@ -1,6 +1,8 @@
 package io.neczpal.locations_spring.services;
 
+import io.neczpal.locations_spring.dtos.CreateLocationCommand;
 import io.neczpal.locations_spring.dtos.LocationDto;
+import io.neczpal.locations_spring.dtos.UpdateLocationCommand;
 import io.neczpal.locations_spring.entities.Location;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -34,7 +36,39 @@ public class LocationsService {
     public LocationDto findLocationById(long id) {
         return modelMapper.map(locationList.stream()
                 .filter(location -> location.getId() == id)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Not valid ID: " + id)), LocationDto.class);
+    }
+
+    public LocationDto createLocation(CreateLocationCommand createLocationCommand) {
+        Location location = new Location(atomicLong.getAndIncrement(),
+                createLocationCommand.getName(),
+                createLocationCommand.getLon(),
+                createLocationCommand.getLat());
+
+        locationList.add(location);
+        return modelMapper.map(location, LocationDto.class);
+    }
+
+    public LocationDto updateLocation(long id, UpdateLocationCommand updateLocationCommand) {
+        Location location = locationList.stream()
+                .filter(loc -> loc.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Not valid ID")), LocationDto.class);
+                .orElseThrow(() -> new IllegalArgumentException("Not valid ID: " + id));
+
+        location.setName(updateLocationCommand.getName());
+        location.setLon(updateLocationCommand.getLon());
+        location.setLat(updateLocationCommand.getLat());
+
+        return modelMapper.map(location, LocationDto.class);
+    }
+
+    public void deleteLocation(long id) {
+        Location location = locationList.stream()
+                .filter(loc -> loc.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Not valid ID: " + id));
+
+        locationList.remove(location);
     }
 }

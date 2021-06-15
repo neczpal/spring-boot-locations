@@ -1,10 +1,11 @@
 package io.neczpal.locations_spring.controllers;
 
+import io.neczpal.locations_spring.dtos.CreateLocationCommand;
 import io.neczpal.locations_spring.dtos.LocationDto;
+import io.neczpal.locations_spring.dtos.UpdateLocationCommand;
 import io.neczpal.locations_spring.services.LocationsService;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,5 +35,20 @@ public class LocationsController {
     @GetMapping("/{id}")
     public LocationDto getLocationById(@PathVariable long id) {
         return locationsService.findLocationById(id);
+    }
+
+    @PostMapping
+    public LocationDto createLocation(@RequestBody CreateLocationCommand createLocationCommand) {
+        return locationsService.createLocation(createLocationCommand);
+    }
+
+    @PutMapping("/{id}")
+    public LocationDto updateLocation(@PathVariable long id, @RequestBody UpdateLocationCommand updateLocationCommand) {
+        return locationsService.updateLocation(id, updateLocationCommand);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteLocation(@PathVariable long id) {
+        locationsService.deleteLocation(id);
     }
 }
