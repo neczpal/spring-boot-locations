@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "id of the location",
+      "format": "int64",
+      "example": 1
+    },
+    "name": {
+      "type": "string",
+      "description": "name of the location",
+      "example": "Budapest"
+    },
+    "lat": {
+      "type": "number",
+      "description": "latitude of the location",
+      "format": "double",
+      "example": 47.49801
+    },
+    "lon": {
+      "type": "number",
+      "description": "longitude of the location",
+      "format": "double",
+      "example": 19.03991
+    }
+  }
+}
