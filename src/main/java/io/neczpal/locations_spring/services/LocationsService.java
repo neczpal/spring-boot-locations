@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class LocationService {
+public class LocationsService {
     List<Location> locationList = List.of(Location.BUDAPEST, Location.SOPRON, Location.SZEGED);
 
 
