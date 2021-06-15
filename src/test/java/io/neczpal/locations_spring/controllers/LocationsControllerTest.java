@@ -1,7 +1,6 @@
 package io.neczpal.locations_spring.controllers;
 
 import io.neczpal.locations_spring.dtos.LocationDto;
-import io.neczpal.locations_spring.entities.Location;
 import io.neczpal.locations_spring.services.LocationsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +30,6 @@ class LocationsControllerTest {
         assertThat(locationsController.getLocations(Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
-                Optional.empty()).get(0).getName()).startsWith("Budapest");
+                Optional.empty()).getLocationDtoList().get(0).getName()).startsWith("Budapest");
     }
 }

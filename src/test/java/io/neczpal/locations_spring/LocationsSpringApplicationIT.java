@@ -29,7 +29,7 @@ class LocationsSpringApplicationIT {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty())
-            .get(0).getName()).startsWith("Budapest");
+            .getLocationDtoList().get(0).getName()).startsWith("Budapest");
     }
 
 }

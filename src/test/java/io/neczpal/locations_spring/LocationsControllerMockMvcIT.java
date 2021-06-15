@@ -37,7 +37,7 @@ public class LocationsControllerMockMvcIT {
 
         mockMvc.perform(get("/api/locations"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name", equalTo("Budapest")));
+                .andExpect(jsonPath("$.locationDtoList[0].name", equalTo("Budapest")));
     }
 
 }

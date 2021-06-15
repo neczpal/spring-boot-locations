@@ -50,7 +50,6 @@ public class LocationsControllerRestAssuredIT {
                 .get("/api/locations")
                 .then()
                 .statusCode(200)
-                .body("[0].name", equalTo("Budapest"))
                 .body("size()", equalTo(1));
     }
     @Test

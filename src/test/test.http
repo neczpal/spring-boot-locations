@@ -1,9 +1,9 @@
 ###
 GET http://localhost:8080/api/locations/
 
-###
-GET http://localhost:8080/api/locations/11
-
+### get in xml
+GET http://localhost:8080/api/locations/
+Accept: application/xml
 
 ###
 POST http://localhost:8080/api/locations

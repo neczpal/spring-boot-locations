@@ -2,6 +2,7 @@ package io.neczpal.locations_spring.controllers;
 
 import io.neczpal.locations_spring.dtos.CreateLocationCommand;
 import io.neczpal.locations_spring.dtos.LocationDto;
+import io.neczpal.locations_spring.dtos.LocationsDto;
 import io.neczpal.locations_spring.dtos.UpdateLocationCommand;
 import io.neczpal.locations_spring.exceptions.LocationNotFoundException;
 import io.neczpal.locations_spring.services.LocationsService;
@@ -16,7 +17,6 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,29 +30,29 @@ public class LocationsController {
         this.locationsService = locationsService;
     }
 
-    @GetMapping
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "lists all locations")
     @ApiResponse(responseCode = "200", description = "locations has been listed")
-    public List<LocationDto> getLocations(@RequestParam Optional<Double> minLat,
-                                          @RequestParam Optional<Double> maxLat,
-                                          @RequestParam Optional<Double> minLon,
-                                          @RequestParam Optional<Double> maxLon) {
-        return locationsService.getLocations().stream().filter(
+    public LocationsDto getLocations(@RequestParam Optional<Double> minLat,
+                                     @RequestParam Optional<Double> maxLat,
+                                     @RequestParam Optional<Double> minLon,
+                                     @RequestParam Optional<Double> maxLon) {
+        return new LocationsDto(locationsService.getLocations().stream().filter(
                 locationDto -> (minLat.isEmpty() || minLat.get() <= locationDto.getLat()) &&
                         (maxLat.isEmpty() || maxLat.get()  >= locationDto.getLat()) &&
                         (minLon.isEmpty() || minLon.get()  <= locationDto.getLat()) &&
                         (maxLon.isEmpty() || maxLon.get()  >= locationDto.getLat()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "get a locations by its id")
     @ApiResponse(responseCode = "200", description = "location returned")
     public LocationDto getLocationById(@PathVariable long id) {
         return locationsService.findLocationById(id);
     }
 
-    @PostMapping
+    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "create a location")
     @ApiResponse(responseCode = "201", description = "location created")
@@ -60,7 +60,7 @@ public class LocationsController {
         return locationsService.createLocation(createLocationCommand);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "edit a location")
     @ApiResponse(responseCode = "200", description = "location edited")
     public LocationDto updateLocation(@PathVariable long id, @RequestBody UpdateLocationCommand updateLocationCommand) {
