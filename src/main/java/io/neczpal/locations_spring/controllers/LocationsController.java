@@ -5,6 +5,9 @@ import io.neczpal.locations_spring.dtos.LocationDto;
 import io.neczpal.locations_spring.dtos.UpdateLocationCommand;
 import io.neczpal.locations_spring.exceptions.LocationNotFoundException;
 import io.neczpal.locations_spring.services.LocationsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/locations")
+@Tag(name = "Operations on locations")
 public class LocationsController {
     private final LocationsService locationsService;
 
@@ -27,6 +31,8 @@ public class LocationsController {
     }
 
     @GetMapping
+    @Operation(summary = "lists all locations")
+    @ApiResponse(responseCode = "200", description = "locations has been listed")
     public List<LocationDto> getLocations(@RequestParam Optional<Double> minLat,
                                           @RequestParam Optional<Double> maxLat,
                                           @RequestParam Optional<Double> minLon,
@@ -40,23 +46,31 @@ public class LocationsController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "get a locations by its id")
+    @ApiResponse(responseCode = "200", description = "location returned")
     public LocationDto getLocationById(@PathVariable long id) {
         return locationsService.findLocationById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "create a location")
+    @ApiResponse(responseCode = "201", description = "location created")
     public LocationDto createLocation(@RequestBody CreateLocationCommand createLocationCommand) {
         return locationsService.createLocation(createLocationCommand);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "edit a location")
+    @ApiResponse(responseCode = "200", description = "location edited")
     public LocationDto updateLocation(@PathVariable long id, @RequestBody UpdateLocationCommand updateLocationCommand) {
         return locationsService.updateLocation(id, updateLocationCommand);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
+    @Operation(summary = "delete a location")
+    @ApiResponse(responseCode = "204", description = "location deleted")
     public void deleteLocation(@PathVariable long id) {
         locationsService.deleteLocation(id);
     }
