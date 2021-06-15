@@ -4,6 +4,7 @@ import io.neczpal.locations_spring.dtos.CreateLocationCommand;
 import io.neczpal.locations_spring.dtos.LocationDto;
 import io.neczpal.locations_spring.dtos.UpdateLocationCommand;
 import io.neczpal.locations_spring.services.LocationsService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class LocationsController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public LocationDto createLocation(@RequestBody CreateLocationCommand createLocationCommand) {
         return locationsService.createLocation(createLocationCommand);
     }
@@ -47,6 +49,7 @@ public class LocationsController {
         return locationsService.updateLocation(id, updateLocationCommand);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteLocation(@PathVariable long id) {
         locationsService.deleteLocation(id);
