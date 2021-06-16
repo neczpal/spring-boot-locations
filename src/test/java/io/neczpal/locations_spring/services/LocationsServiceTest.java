@@ -2,6 +2,7 @@ package io.neczpal.locations_spring.services;
 
 import io.neczpal.locations_spring.dtos.LocationDto;
 import io.neczpal.locations_spring.persistence.LocationDao;
+import io.neczpal.locations_spring.persistence.LocationRepository;
 import io.neczpal.locations_spring.properties.LocationServiceProperties;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -19,10 +20,13 @@ class LocationsServiceTest {
     @Autowired
     LocationDao locationDao;
 
+    @Autowired
+    LocationRepository locationRepository;
+
     @Test
     void getLocations() {
         LocationServiceProperties properties = new LocationServiceProperties();
-        LocationsService locationsService = new LocationsService(modelMapper, properties, locationDao);
+        LocationsService locationsService = new LocationsService(modelMapper, properties, locationDao, locationRepository);
         LocationDto location = locationsService.getLocations().get(0);
         assertThat(location.getName()).isEqualTo("Budapest");
     }

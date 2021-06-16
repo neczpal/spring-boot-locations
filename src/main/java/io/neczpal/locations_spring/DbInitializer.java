@@ -13,6 +13,8 @@ public class DbInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        // Gets done automatically
+        /*
         jdbcTemplate.execute(
                 "create table locations (id bigint auto_increment, loc_name varchar(255), lat double, lon double, primary key(id))"
         );
@@ -23,6 +25,6 @@ public class DbInitializer implements CommandLineRunner {
 
         jdbcTemplate.execute(
                 "insert into locations(loc_name, lat, lon) values ('Szeged', 44.2, 19.3)"
-        );
+        );*/
     }
 }
