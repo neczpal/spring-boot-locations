@@ -20,6 +20,6 @@ services:
     depends_on:
       - locations-mariadb
     environment:
-      SPRING_DATASOURCE_URL: 'jdbc:mariadb://locations-net-mariadb/locations'
+      SPRING_DATASOURCE_URL: 'jdbc:mariadb://locations-mariadb/locations'
     entrypoint: ['./wait-for-it.sh', '-t', '120', 'locations-mariadb:3306', '--', 'java', 'org.springframework.boot.loader.JarLauncher']
 
