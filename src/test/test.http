@@ -10,7 +10,7 @@ POST http://localhost:8080/api/locations
 Content-Type: application/json
 
 {
-  "name": "Budapest",
+  "name": "budapest",
   "lon": 42.1,
   "lat": 18.7
 }

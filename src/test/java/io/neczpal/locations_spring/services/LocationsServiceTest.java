@@ -1,10 +1,8 @@
 package io.neczpal.locations_spring.services;
 
 import io.neczpal.locations_spring.dtos.LocationDto;
-import io.neczpal.locations_spring.entities.Location;
+import io.neczpal.locations_spring.properties.LocationServiceProperties;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +17,8 @@ class LocationsServiceTest {
 
     @Test
     void getLocations() {
-        LocationsService locationsService = new LocationsService(modelMapper);
+        LocationServiceProperties properties = new LocationServiceProperties();
+        LocationsService locationsService = new LocationsService(modelMapper, properties);
         LocationDto location = locationsService.getLocations().get(0);
         assertThat(location.getName()).isEqualTo("Budapest");
     }

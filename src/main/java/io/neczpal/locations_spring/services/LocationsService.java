@@ -5,8 +5,10 @@ import io.neczpal.locations_spring.dtos.LocationDto;
 import io.neczpal.locations_spring.dtos.UpdateLocationCommand;
 import io.neczpal.locations_spring.entities.Location;
 import io.neczpal.locations_spring.exceptions.LocationNotFoundException;
+import io.neczpal.locations_spring.properties.LocationServiceProperties;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
@@ -16,16 +18,20 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
+@EnableConfigurationProperties(LocationServiceProperties.class)
 public class LocationsService {
     private List<Location> locationList = Collections.synchronizedList(new ArrayList<>(List.of(
             new Location(1, "Budapest", 42.1, 17.8),
             new Location(2, "Szeged", 37.1, 15.8)
     )));
     private AtomicLong atomicLong = new AtomicLong(3);
-    private ModelMapper modelMapper;
 
-    public LocationsService(ModelMapper modelMapper) {
+    private ModelMapper modelMapper;
+    private LocationServiceProperties locationServiceProperties;
+
+    public LocationsService(ModelMapper modelMapper, LocationServiceProperties locationServiceProperties) {
         this.modelMapper = modelMapper;
+        this.locationServiceProperties = locationServiceProperties;
     }
 
     public List<LocationDto> getLocations() {
@@ -47,6 +53,11 @@ public class LocationsService {
                 createLocationCommand.getLon(),
                 createLocationCommand.getLat());
 
+        if(locationServiceProperties.isAutoCapitalize()) {
+            String old = location.getName();
+            location.setName(old.substring(0, 1).toUpperCase() + old.substring(1));
+        }
+
         locationList.add(location);
         return modelMapper.map(location, LocationDto.class);
     }
@@ -60,6 +71,11 @@ public class LocationsService {
         location.setName(updateLocationCommand.getName());
         location.setLon(updateLocationCommand.getLon());
         location.setLat(updateLocationCommand.getLat());
+
+        if(locationServiceProperties.isAutoCapitalize()) {
+            String old = location.getName();
+            location.setName(old.substring(0, 1).toUpperCase() + old.substring(1));
+        }
 
         return modelMapper.map(location, LocationDto.class);
     }
