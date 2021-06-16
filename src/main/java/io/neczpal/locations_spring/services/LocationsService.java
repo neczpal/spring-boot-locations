@@ -6,6 +6,7 @@ import io.neczpal.locations_spring.dtos.UpdateLocationCommand;
 import io.neczpal.locations_spring.entities.Location;
 import io.neczpal.locations_spring.exceptions.LocationNotFoundException;
 import io.neczpal.locations_spring.properties.LocationServiceProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -19,6 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @EnableConfigurationProperties(LocationServiceProperties.class)
+@Slf4j
 public class LocationsService {
     private List<Location> locationList = Collections.synchronizedList(new ArrayList<>(List.of(
             new Location(1, "Budapest", 42.1, 17.8),
@@ -59,6 +61,8 @@ public class LocationsService {
         }
 
         locationList.add(location);
+
+        log.info("Employee has been created: " + location.getId());
         return modelMapper.map(location, LocationDto.class);
     }
 
@@ -77,6 +81,7 @@ public class LocationsService {
             location.setName(old.substring(0, 1).toUpperCase() + old.substring(1));
         }
 
+        log.info("Employee has been updated: " + id);
         return modelMapper.map(location, LocationDto.class);
     }
 
@@ -86,6 +91,7 @@ public class LocationsService {
                 .findFirst()
                 .orElseThrow(() -> new LocationNotFoundException("Not valid ID: " + id));
 
+        log.info("Employee has been deleted: " + id);
         locationList.remove(location);
     }
 
