@@ -4,99 +4,81 @@ import io.neczpal.locations_spring.dtos.CreateLocationCommand;
 import io.neczpal.locations_spring.dtos.LocationDto;
 import io.neczpal.locations_spring.dtos.UpdateLocationCommand;
 import io.neczpal.locations_spring.entities.Location;
-import io.neczpal.locations_spring.exceptions.LocationNotFoundException;
+import io.neczpal.locations_spring.persistence.LocationDao;
 import io.neczpal.locations_spring.properties.LocationServiceProperties;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 @EnableConfigurationProperties(LocationServiceProperties.class)
 @Slf4j
 public class LocationsService {
-    private List<Location> locationList = Collections.synchronizedList(new ArrayList<>(List.of(
-            new Location(1, "Budapest", 42.1, 17.8),
-            new Location(2, "Szeged", 37.1, 15.8)
-    )));
-    private AtomicLong atomicLong = new AtomicLong(3);
 
     private ModelMapper modelMapper;
     private LocationServiceProperties locationServiceProperties;
+    private LocationDao locationDao;
 
-    public LocationsService(ModelMapper modelMapper, LocationServiceProperties locationServiceProperties) {
-        this.modelMapper = modelMapper;
-        this.locationServiceProperties = locationServiceProperties;
-    }
 
     public List<LocationDto> getLocations() {
-        Type type = new TypeToken<List<LocationDto>>() {
-        }.getType();
-        return modelMapper.map(locationList, type);
+        return locationDao
+                .findAll()
+                .stream()
+                .map(location -> modelMapper.map(location, LocationDto.class))
+                .collect(Collectors.toList());
     }
 
     public LocationDto findLocationById(long id) {
-        return modelMapper.map(locationList.stream()
-                .filter(location -> location.getId() == id)
-                .findAny()
-                .orElseThrow(() -> new LocationNotFoundException("Not valid ID: " + id)), LocationDto.class);
+        return modelMapper.map(locationDao.findById(id), LocationDto.class);
     }
 
     public LocationDto createLocation(CreateLocationCommand createLocationCommand) {
-        Location location = new Location(atomicLong.getAndIncrement(),
+        Location location = new Location(
                 createLocationCommand.getName(),
                 createLocationCommand.getLon(),
                 createLocationCommand.getLat());
 
-        if(locationServiceProperties.isAutoCapitalize()) {
+        if (locationServiceProperties.isAutoCapitalize()) {
             String old = location.getName();
             location.setName(old.substring(0, 1).toUpperCase() + old.substring(1));
         }
 
-        locationList.add(location);
+        locationDao.save(location);
 
         log.info("Employee has been created: " + location.getId());
         return modelMapper.map(location, LocationDto.class);
     }
 
     public LocationDto updateLocation(long id, UpdateLocationCommand updateLocationCommand) {
-        Location location = locationList.stream()
-                .filter(loc -> loc.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new LocationNotFoundException("Not valid ID: " + id));
+        Location location = new Location(
+                id,
+                updateLocationCommand.getName(),
+                updateLocationCommand.getLon(),
+                updateLocationCommand.getLat());
 
-        location.setName(updateLocationCommand.getName());
-        location.setLon(updateLocationCommand.getLon());
-        location.setLat(updateLocationCommand.getLat());
-
-        if(locationServiceProperties.isAutoCapitalize()) {
+        if (locationServiceProperties.isAutoCapitalize()) {
             String old = location.getName();
             location.setName(old.substring(0, 1).toUpperCase() + old.substring(1));
         }
 
-        log.info("Employee has been updated: " + id);
+        locationDao.update(location);
+
+        log.info("Employee has been updated: " + location.getId());
         return modelMapper.map(location, LocationDto.class);
     }
 
     public void deleteLocation(long id) {
-        Location location = locationList.stream()
-                .filter(loc -> loc.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new LocationNotFoundException("Not valid ID: " + id));
-
+        locationDao.deleteById(id);
         log.info("Employee has been deleted: " + id);
-        locationList.remove(location);
     }
 
     public void deleteAllLocations() {
-        locationList.clear();
-        atomicLong = new AtomicLong(0);
+        locationDao.deleteAll();
     }
 }
